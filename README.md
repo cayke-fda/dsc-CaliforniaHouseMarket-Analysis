@@ -34,7 +34,7 @@ This project aims to analyze data from the California House Market in order to b
 
 General form of the dataset:
 
-</style>
+
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -1023,8 +1023,8 @@ We added 3 stacking models. Each of them used as estimators the best 3 models we
 |Random Forests|0.76 |0.21 |
 |Gradient Boosting|0.61 |0.21 |
 |XGBoost|0.53 |0.20 |
-|Stacking + Decision Tree|3.83 |0.37 |
-|Stacking + Random Forest|3.39 |0.35 |
+|Stacking + Decision Tree|1.17 |0.22 |
+|Stacking + Random Forest|0.69 |0.20 |
 |Average 3 best models|0.59 |0.20 |
 
 Our best model was an average 3 of the best models and XGBoost. We use the average of the models to prevent overfitting. 
