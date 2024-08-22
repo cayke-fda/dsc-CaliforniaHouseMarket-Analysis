@@ -32,56 +32,8 @@ This project aims to analyze data from the California House Market in order to b
 
 # Exploratory Data Analysis and Data Cleaning
 
+General form of the dataset:
 
-```python
-# We start by importing several libraries to our model. Notice that we also import myfunctions file with important 
-# functions created to clean the data.
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-from scipy import stats
-import scipy
-import numpy as np
-from myfunctions import *
-
-from sklearn.preprocessing import OneHotEncoder, StandardScaler, Normalizer, MaxAbsScaler, PolynomialFeatures
-from sklearn.impute import SimpleImputer
-from sklearn.pipeline import Pipeline
-from sklearn.compose import ColumnTransformer
-from sklearn.linear_model import LinearRegression, ElasticNet, Ridge, Lasso
-from sklearn.model_selection import train_test_split,GridSearchCV, RandomizedSearchCV
-from sklearn.metrics import make_scorer, mean_squared_error
-from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor, GradientBoostingRegressor, StackingRegressor
-from sklearn.tree import DecisionTreeRegressor
-import xgboost as xgb
-
-%matplotlib inline
-import warnings,os
-warnings.simplefilter("ignore")
-os.environ["PYTHONWARNINGS"] = "ignore"
-```
-
-
-```python
-df = pd.read_csv('data/train.csv')
-df.rename(columns={'Appliances included':'Appliances','Laundry features':'Laundry'},inplace=True)
-print_full_cols(df)
-```
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
 </style>
 <table border="1" class="dataframe">
   <thead>
@@ -620,29 +572,8 @@ print_full_cols(df)
 <p>47439 rows × 41 columns</p>
 </div>
 
+Basic statistics on each kind of data.
 
-
-```python
-df.describe()
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -858,12 +789,7 @@ df.describe()
 </table>
 </div>
 
-
-
-
-```python
-df.info()
-```
+Amount of non-missing values and type of each data in each column.
 
     <class 'pandas.core.frame.DataFrame'>
     RangeIndex: 47439 entries, 0 to 47438
@@ -916,11 +842,7 @@ df.info()
 
 
 
-```python
-df.isna().sum()
-```
-
-
+Amount of missing data per feature:
 
 
     Id                                 0
@@ -975,7 +897,7 @@ After exploring the data we notice a few things:
 
 # We need to impute or clean the data in each of those features
 
-We have developed several functions to clean the data as needed. Because of the amount of data, some generalization had to be done in a few cases.
+We have developed several functions to clean the data as needed. Because of the amount of data, some generalization had to be done in a few cases. Each of these function is in myfunctions.py file
 
 
 ```python
@@ -997,93 +919,6 @@ delete_columns(df)
 ```
 
 
-# Building Pipelines
-
-We add the next preprocessing steps into a pipeline.
-
-
-
-
-<style>#sk-container-id-9 {color: black;}#sk-container-id-9 pre{padding: 0;}#sk-container-id-9 div.sk-toggleable {background-color: white;}#sk-container-id-9 label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.3em;box-sizing: border-box;text-align: center;}#sk-container-id-9 label.sk-toggleable__label-arrow:before {content: "▸";float: left;margin-right: 0.25em;color: #696969;}#sk-container-id-9 label.sk-toggleable__label-arrow:hover:before {color: black;}#sk-container-id-9 div.sk-estimator:hover label.sk-toggleable__label-arrow:before {color: black;}#sk-container-id-9 div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}#sk-container-id-9 div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}#sk-container-id-9 input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}#sk-container-id-9 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {content: "▾";}#sk-container-id-9 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-9 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-9 input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}#sk-container-id-9 div.sk-estimator {font-family: monospace;background-color: #f0f8ff;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;margin-bottom: 0.5em;}#sk-container-id-9 div.sk-estimator:hover {background-color: #d4ebff;}#sk-container-id-9 div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}#sk-container-id-9 div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-9 div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: 0;}#sk-container-id-9 div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;padding-right: 0.2em;padding-left: 0.2em;position: relative;}#sk-container-id-9 div.sk-item {position: relative;z-index: 1;}#sk-container-id-9 div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;position: relative;}#sk-container-id-9 div.sk-item::before, #sk-container-id-9 div.sk-parallel-item::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: -1;}#sk-container-id-9 div.sk-parallel-item {display: flex;flex-direction: column;z-index: 1;position: relative;background-color: white;}#sk-container-id-9 div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}#sk-container-id-9 div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}#sk-container-id-9 div.sk-parallel-item:only-child::after {width: 0;}#sk-container-id-9 div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0 0.4em 0.5em 0.4em;box-sizing: border-box;padding-bottom: 0.4em;background-color: white;}#sk-container-id-9 div.sk-label label {font-family: monospace;font-weight: bold;display: inline-block;line-height: 1.2em;}#sk-container-id-9 div.sk-label-container {text-align: center;}#sk-container-id-9 div.sk-container {/* jupyter's `normalize.less` sets `[hidden] { display: none; }` but bootstrap.min.css set `[hidden] { display: none !important; }` so we also need the `!important` here to be able to override the default hidden behavior on the sphinx rendered scikit-learn.org. See: https://github.com/scikit-learn/scikit-learn/issues/21755 */display: inline-block !important;position: relative;}#sk-container-id-9 div.sk-text-repr-fallback {display: none;}</style><div id="sk-container-id-9" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>ColumnTransformer(transformers=[(&#x27;nominalpipe&#x27;,
-                                 Pipeline(steps=[(&#x27;onehotimputer&#x27;,
-                                                  SimpleImputer(strategy=&#x27;most_frequent&#x27;)),
-                                                 (&#x27;onehotenc&#x27;,
-                                                  OneHotEncoder(drop=&#x27;first&#x27;,
-                                                                handle_unknown=&#x27;ignore&#x27;,
-                                                                sparse_output=False))]),
-                                 [&#x27;Type&#x27;, &#x27;Heating&#x27;, &#x27;Cooling&#x27;, &#x27;Parking&#x27;,
-                                  &#x27;Region&#x27;]),
-                                (&#x27;noohepipe&#x27;,
-                                 Pipeline(steps=[(&#x27;onehotimputer&#x27;,
-                                                  SimpleImputer(strategy=&#x27;most_frequent&#x27;))]),
-                                 Ind...
-                                                 (&#x27;numnorm&#x27;,
-                                                  StandardScaler())]),
-                                 [&#x27;Year built&#x27;, &#x27;Lot&#x27;, &#x27;Bedrooms&#x27;, &#x27;Bathrooms&#x27;,
-                                  &#x27;Full bathrooms&#x27;,
-                                  &#x27;Total interior livable area&#x27;, &#x27;Total spaces&#x27;,
-                                  &#x27;Garage spaces&#x27;, &#x27;Elementary School Score&#x27;,
-                                  &#x27;Elementary School Distance&#x27;,
-                                  &#x27;Middle School Score&#x27;,
-                                  &#x27;Middle School Distance&#x27;, &#x27;High School Score&#x27;,
-                                  &#x27;High School Distance&#x27;, &#x27;Tax assessed value&#x27;,
-                                  &#x27;Annual tax amount&#x27;, &#x27;Listed On&#x27;,
-                                  &#x27;Listed Price&#x27;, &#x27;Last Sold Price&#x27;])])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-90" type="checkbox" ><label for="sk-estimator-id-90" class="sk-toggleable__label sk-toggleable__label-arrow">ColumnTransformer</label><div class="sk-toggleable__content"><pre>ColumnTransformer(transformers=[(&#x27;nominalpipe&#x27;,
-                                 Pipeline(steps=[(&#x27;onehotimputer&#x27;,
-                                                  SimpleImputer(strategy=&#x27;most_frequent&#x27;)),
-                                                 (&#x27;onehotenc&#x27;,
-                                                  OneHotEncoder(drop=&#x27;first&#x27;,
-                                                                handle_unknown=&#x27;ignore&#x27;,
-                                                                sparse_output=False))]),
-                                 [&#x27;Type&#x27;, &#x27;Heating&#x27;, &#x27;Cooling&#x27;, &#x27;Parking&#x27;,
-                                  &#x27;Region&#x27;]),
-                                (&#x27;noohepipe&#x27;,
-                                 Pipeline(steps=[(&#x27;onehotimputer&#x27;,
-                                                  SimpleImputer(strategy=&#x27;most_frequent&#x27;))]),
-                                 Ind...
-                                                 (&#x27;numnorm&#x27;,
-                                                  StandardScaler())]),
-                                 [&#x27;Year built&#x27;, &#x27;Lot&#x27;, &#x27;Bedrooms&#x27;, &#x27;Bathrooms&#x27;,
-                                  &#x27;Full bathrooms&#x27;,
-                                  &#x27;Total interior livable area&#x27;, &#x27;Total spaces&#x27;,
-                                  &#x27;Garage spaces&#x27;, &#x27;Elementary School Score&#x27;,
-                                  &#x27;Elementary School Distance&#x27;,
-                                  &#x27;Middle School Score&#x27;,
-                                  &#x27;Middle School Distance&#x27;, &#x27;High School Score&#x27;,
-                                  &#x27;High School Distance&#x27;, &#x27;Tax assessed value&#x27;,
-                                  &#x27;Annual tax amount&#x27;, &#x27;Listed On&#x27;,
-                                  &#x27;Listed Price&#x27;, &#x27;Last Sold Price&#x27;])])</pre></div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-91" type="checkbox" ><label for="sk-estimator-id-91" class="sk-toggleable__label sk-toggleable__label-arrow">nominalpipe</label><div class="sk-toggleable__content"><pre>[&#x27;Type&#x27;, &#x27;Heating&#x27;, &#x27;Cooling&#x27;, &#x27;Parking&#x27;, &#x27;Region&#x27;]</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-92" type="checkbox" ><label for="sk-estimator-id-92" class="sk-toggleable__label sk-toggleable__label-arrow">SimpleImputer</label><div class="sk-toggleable__content"><pre>SimpleImputer(strategy=&#x27;most_frequent&#x27;)</pre></div></div></div><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-93" type="checkbox" ><label for="sk-estimator-id-93" class="sk-toggleable__label sk-toggleable__label-arrow">OneHotEncoder</label><div class="sk-toggleable__content"><pre>OneHotEncoder(drop=&#x27;first&#x27;, handle_unknown=&#x27;ignore&#x27;, sparse_output=False)</pre></div></div></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-94" type="checkbox" ><label for="sk-estimator-id-94" class="sk-toggleable__label sk-toggleable__label-arrow">noohepipe</label><div class="sk-toggleable__content"><pre>Index([&#x27;State&#x27;, &#x27;Flooring_tile&#x27;, &#x27;Flooring_carpet&#x27;, &#x27;Flooring_wood&#x27;,
-       &#x27;Flooring_vinyl&#x27;, &#x27;Flooring_laminate&#x27;, &#x27;Flooring_hardwood&#x27;,
-       &#x27;Flooring_linoleum&#x27;, &#x27;Flooring_stone&#x27;, &#x27;Flooring_concrete&#x27;,
-       &#x27;Flooring_marble&#x27;, &#x27;Flooring_slate&#x27;, &#x27;Appliances_dishwasher&#x27;,
-       &#x27;Appliances_refrigerator&#x27;, &#x27;Appliances_disposal&#x27;,
-       &#x27;Appliances_microwave&#x27;, &#x27;Appliances_washer&#x27;, &#x27;Appliances_dryer&#x27;,
-       &#x27;Appliances_gasrange&#x27;, &#x27;Appliances_rangehood&#x27;, &#x27;Appliances_gasoven&#x27;,
-       &#x27;Appliances_gaswaterheater&#x27;, &#x27;Appliances_oven&#x27;, &#x27;Appliances_gascooktop&#x27;,
-       &#x27;Appliances_range&#x27;, &#x27;Appliances_doubleoven&#x27;, &#x27;Appliances_built&#x27;,
-       &#x27;Appliances_electricrange&#x27;, &#x27;Appliances_free&#x27;,
-       &#x27;Appliances_standingrange&#x27;, &#x27;Appliances_selfcleaningoven&#x27;,
-       &#x27;Appliances_waterheater&#x27;, &#x27;Appliances_tanklesswaterheater&#x27;,
-       &#x27;Appliances_electricoven&#x27;, &#x27;Appliances_ventedexhaustfan&#x27;,
-       &#x27;Appliances_in&#x27;, &#x27;Appliances_freezer&#x27;, &#x27;Appliances_barbecue&#x27;,
-       &#x27;Appliances_icemaker&#x27;, &#x27;Appliances_trashcompactor&#x27;,
-       &#x27;Appliances_electriccooktop&#x27;, &#x27;Appliances_convectionoven&#x27;,
-       &#x27;Appliances_inrange&#x27;, &#x27;Appliances_energystarqualifiedappliances&#x27;,
-       &#x27;Appliances_waterlinetorefrigerator&#x27;, &#x27;Appliances_6burnerstove&#x27;,
-       &#x27;Appliances_garbagedisposal&#x27;, &#x27;Appliances_waterpurifier&#x27;,
-       &#x27;Appliances_propanerange&#x27;, &#x27;Appliances_gascooking&#x27;,
-       &#x27;Appliances_plumbedforicemaker&#x27;, &#x27;Appliances_electricwaterheater&#x27;,
-       &#x27;Appliances_watersoftener&#x27;, &#x27;Laundry_washer&#x27;, &#x27;Laundry_inside&#x27;,
-       &#x27;Laundry_dryer&#x27;, &#x27;Laundry_laundryroom&#x27;, &#x27;Laundry_ingarage&#x27;,
-       &#x27;Laundry_electricdryerhookup&#x27;, &#x27;Laundry_washerhookup&#x27;,
-       &#x27;Laundry_electricityhookup(220v)&#x27;, &#x27;Laundry_sink&#x27;,
-       &#x27;Laundry_inutilityroom&#x27;, &#x27;Laundry_gasdryerhookup&#x27;, &#x27;Laundry_gashookup&#x27;,
-       &#x27;Laundry_tub&#x27;, &#x27;Laundry_laundrycloset&#x27;,
-       &#x27;Laundry_electricityhookup(110v)&#x27;, &#x27;Laundry_gas&#x27;, &#x27;Laundry_stackable&#x27;,
-       &#x27;Laundry_inkitchen&#x27;, &#x27;Laundry_upperfloor&#x27;, &#x27;Laundry_upperlevel&#x27;,
-       &#x27;Laundry_cabinets&#x27;, &#x27;Laundry_outside&#x27;],
-      dtype=&#x27;object&#x27;)</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-95" type="checkbox" ><label for="sk-estimator-id-95" class="sk-toggleable__label sk-toggleable__label-arrow">SimpleImputer</label><div class="sk-toggleable__content"><pre>SimpleImputer(strategy=&#x27;most_frequent&#x27;)</pre></div></div></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-96" type="checkbox" ><label for="sk-estimator-id-96" class="sk-toggleable__label sk-toggleable__label-arrow">numericpipe</label><div class="sk-toggleable__content"><pre>[&#x27;Year built&#x27;, &#x27;Lot&#x27;, &#x27;Bedrooms&#x27;, &#x27;Bathrooms&#x27;, &#x27;Full bathrooms&#x27;, &#x27;Total interior livable area&#x27;, &#x27;Total spaces&#x27;, &#x27;Garage spaces&#x27;, &#x27;Elementary School Score&#x27;, &#x27;Elementary School Distance&#x27;, &#x27;Middle School Score&#x27;, &#x27;Middle School Distance&#x27;, &#x27;High School Score&#x27;, &#x27;High School Distance&#x27;, &#x27;Tax assessed value&#x27;, &#x27;Annual tax amount&#x27;, &#x27;Listed On&#x27;, &#x27;Listed Price&#x27;, &#x27;Last Sold Price&#x27;]</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-97" type="checkbox" ><label for="sk-estimator-id-97" class="sk-toggleable__label sk-toggleable__label-arrow">SimpleImputer</label><div class="sk-toggleable__content"><pre>SimpleImputer()</pre></div></div></div><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-98" type="checkbox" ><label for="sk-estimator-id-98" class="sk-toggleable__label sk-toggleable__label-arrow">StandardScaler</label><div class="sk-toggleable__content"><pre>StandardScaler()</pre></div></div></div></div></div></div></div></div></div></div></div></div>
-
 
 
 # Scoring
@@ -1094,14 +929,7 @@ logRMSE=$\sqrt{\frac{1}{N}\sum(\log y_\text{true}-\log y_\text{pred})^2)}$
 
 Taking logs means that errors in predicting expensive houses and cheap houses will affect the result equally for different magnitude orders. However, some models have a problem with this metric (meaning its predicting y_pred<=0) so we use the negative RMSE as a score.
 
-# Train and test sets
 
-A test set has been given for the final score but we need to use part of the train set to test our model.
-
-
-```python
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=19)
-```
 
 # EDA
 
