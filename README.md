@@ -4,6 +4,10 @@ Author: Cayke Felipe dos Anjos
 
 <img src="images/house.jpg" alt="Alt text" width="1200"/>
 
+# Reproducibility
+
+If you want to reproduce the results with this code, we make the requirements.txt file available in this repository. Running "pip install -r requirements.txt" on the terminal will install all packages with their used versions from the environment used here.
+
 # Summary
 
 In this project we analyze data from the California House Market competition from Kaggle (https://www.kaggle.com/c/california-house-prices/overview). 
@@ -1039,6 +1043,8 @@ For the next steps we suggest the following:
 - data needs to eb standardized. Realtors cannot fill the entry with whatever they want. Cleaning the data was a great time hinder and might be obstructing a better score;
 - run more models. Some models took too long or restarted the kernel while NNs from keras just did not couple well with sklearn. We can still try running it using MLP from sklearn or not using a pipeline at all.
 - we now have models that do not predict a negativa house value. We can rerun gridsearch using logRMSE and actually get a better model.
+
+# Contact
 
 Thank you very much! Contact me at:
 * [caykefelipe01@gmail.com](caykefelipe01@gmail.com)
