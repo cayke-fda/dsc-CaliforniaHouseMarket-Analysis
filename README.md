@@ -928,7 +928,7 @@ delete_columns(df)
 # Scoring
 For the scoring we use a special RMSE funtion where we subtract the logarithm of the observed price from the logarithm of the predicted price on the following form.
 
-logRMSE=${tex'$\sqrt{\frac{1}{N}\sum(\log y_\text{true}-\log y_\text{pred})^2)}$'}
+logRMSE=$$\sqrt{\frac{1}{N}\sum(\log y_\text{true}-\log y_\text{pred})^2)}$$
 
 
 Taking logs means that errors in predicting expensive houses and cheap houses will affect the result equally for different magnitude orders. However, some models have a problem with this metric (meaning its predicting y_pred<=0) so we use the negative RMSE as a score.
